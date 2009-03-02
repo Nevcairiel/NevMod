@@ -228,3 +228,10 @@ local function lootfilter(msg)
 	end
 end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", lootfilter)
+
+local function dalaYell(msg)
+	if msg:find("^Reinforcements are needed on the Wintergrasp") then
+		return true
+	end
+end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_YELL", dalaYell)
