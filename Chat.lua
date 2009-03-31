@@ -152,11 +152,7 @@ end
 
 -- Sticky
 for k, v in pairs(stickyTypes) do
-	if v then
-		ChatTypeInfo[k].sticky = 1
-	else
-		ChatTypeInfo[k].sticky = 0
-	end
+	ChatTypeInfo[k].sticky = v and 1 or 0
 end
 
 -- Buttons
