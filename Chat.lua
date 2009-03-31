@@ -67,6 +67,7 @@ local urlPatterns = {
 local hideLoot = { 
 	[40752] = true, -- Emblem of Heroism
 	[40753] = true, -- Emblem of Valor
+	[45624] = true, -- Emblem of Conquest
 	[43228] = true, -- Stone Keeper's Shard
 }
 
