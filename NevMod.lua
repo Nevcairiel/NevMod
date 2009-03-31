@@ -46,11 +46,14 @@ function NevMod:RepairAndSell()
 				else  
 					funds = math.min(funds, GetGuildBankMoney())  
 				end
-				self:Print( string.format("Autorepaired for %s using guild funds%s.", CostString( math.min(cost, funds) ), cost > funds and ("( and %s extra )"):format(CostString( cost - funds )) or ""))
+				self:Print( string.format("Autorepaired for %s using guild funds %s.", CostString( math.min(cost, funds) ), cost > funds and ("(and %s extra)"):format(CostString( cost - funds )) or ""))
 			else
 				self:Print( string.format("Autorepaired for %s.", CostString( cost )) )
 			end
-			RepairAllItems(guildRepair)
+			if guildRepair then
+				RepairAllItems(guildRepair)
+			end
+			RepairAllItems()
 		end
 	end
 	
