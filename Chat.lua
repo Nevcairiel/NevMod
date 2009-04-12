@@ -56,12 +56,41 @@ local scrollLines = 1
 local urlStyle = " |cffffffff|Hurl:%s|h[%s]|h|r "
 
 local urlPatterns = {
-	{ " www%.([_A-Za-z0-9-]+)%.([_A-Za-z0-9-%.&/]+)%s?", "http://www.%1.%2"},
-	{ " (%a+)://(%S+)%s?", "%1://%2"},
-	{ " ([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", "%1@%2%3%4"},
-	{ " ([_A-Za-z0-9-]+)%.([_A-Za-z0-9-]+)%.(%S+)%s?", "%1.%2.%3"},
-	{ " ([_A-Za-z0-9-]+)%.([_A-Za-z0-9-]+)%.(%S+)%:([_0-9-]+)%s?", "%1.%2.%3:%4"},
-	{ " ([_A-Za-z0-9-]+)%.(%a%a%a)%s?", "%1.%2"},
+		-- X://Y url
+	{ "^(%a[%w%.+-]+://%S+)", "%1"},
+	{ "%f[%S](%a[%w%.+-]+://%S+)", "%1"},
+		-- www.X.Y url
+	{ "^(www%.[-%w_%%]+%.%S+)", "%1"},
+	{ "%f[%S](www%.[-%w_%%]+%.%S+)", "%1"},
+		-- "W X"@Y.Z email (this is seriously a valid email)
+	--{ pattern = '^(%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
+	--{ pattern = '%f[%S](%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
+		-- X@Y.Z email
+	{ "(%S+@[-%w_%%%.]+%.(%a%a+))", "%1"},
+		-- XXX.YYY.ZZZ.WWW:VVVV/UUUUU IPv4 address with port and path
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+		-- XXX.YYY.ZZZ.WWW:VVVV IPv4 address with port (IP of ts server for example)
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+		-- XXX.YYY.ZZZ.WWW/VVVVV IPv4 address with path
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"},
+		-- XXX.YYY.ZZZ.WWW IPv4 address
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"},
+		-- X.Y.Z:WWWW/VVVVV url with port and path
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+		-- X.Y.Z:WWWW url with port (ts server for example)
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+		-- X.Y.Z/WWWWW url with path
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
+		-- X.Y.Z url
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+))", "%1"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+))", "%1"},
 }
 
 local hideLoot = { 
