@@ -89,8 +89,8 @@ local urlPatterns = {
 	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
 	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
 		-- X.Y.Z url
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+))", "%1"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+))", "%1"},
+	--{ "^([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
+	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
 }
 
 local hideLoot = { 
@@ -247,7 +247,7 @@ do
 	end
 end
 
-local function lootfilter(msg)
+local function lootfilter(self, event, msg)
 	local link = msg:match("^.* receives loot: (.-)x?%d*%.$")
 	if link and hideLoot[tonumber(link:match("item:(%d+)"))] then
 		return true
@@ -255,7 +255,7 @@ local function lootfilter(msg)
 end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", lootfilter)
 
-local function dalaYell(msg)
+local function dalaYell(self, event, msg)
 	if msg:find("^Reinforcements are needed on the Wintergrasp") then
 		return true
 	end
