@@ -5,9 +5,9 @@ function NevMod:OnInitialize()
 end
 
 function NevMod:FixBuffPositions()
-	TemporaryEnchantFrame:ClearAllPoints()
-	TemporaryEnchantFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -20, -30)
-	TemporaryEnchantFrame.SetPoint = function() end
+	ConsolidatedBuffs:ClearAllPoints()
+	ConsolidatedBuffs:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -20, -30)
+	ConsolidatedBuffs.SetPoint = function() end
 end
 
 function NevMod:OnEnable()
