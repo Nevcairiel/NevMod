@@ -13,6 +13,9 @@ end
 function NevMod:OnEnable()
 	self:RegisterEvent( "MERCHANT_SHOW", "RepairAndSell" )
 	ConsoleExec("cameraDistanceMaxFactor 4")
+
+	MiniMapInstanceDifficulty:ClearAllPoints()
+	MiniMapInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
 end
 
 -- From SmoothDurability
@@ -20,7 +23,7 @@ local function CostString( cost )
 	local gold = abs(cost / 10000)
 	local silver = abs(mod(cost / 100, 100))
 	local copper = abs(mod(cost, 100))
-	
+
 	if cost > 10000 then
 		return string.format( "|cffffffff%d|r|cffffd700g|r |cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", gold, silver, copper)
 	elseif cost > 100 then
@@ -56,7 +59,7 @@ function NevMod:RepairAndSell()
 			RepairAllItems()
 		end
 	end
-	
+
 	-- Sell Junk ( from tekJunkSeller )
 	for bag=0,4 do
 		for slot=0,GetContainerNumSlots(bag) do
