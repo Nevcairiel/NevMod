@@ -37,6 +37,7 @@ local channelNamePattern = {
 	["%[Party%]"] = "(P)",
 	["%[Raid%]"] = "(R)",
 	["%[Party Leader%]"] = "(PL)",
+	["%[Dungeon Guide%]"] = "(DG)",
 	["%[Raid Leader%]"] = "|cffff3399(|rRL|cffff3399)|r",
 	["%[Raid Warning%]"] = "|cffff0000(|rRW|cffff0000)|r",
 	["%[Officer%]"] = "(O)",
