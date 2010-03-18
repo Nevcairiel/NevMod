@@ -23,7 +23,7 @@ function NevMod:OnEnable()
 end
 
 -- From SmoothDurability
-local function CostString( cost )
+local function CostString(cost)
 	local gold = abs(cost / 10000)
 	local silver = abs(mod(cost / 100, 100))
 	local copper = abs(mod(cost, 100))
@@ -31,7 +31,7 @@ local function CostString( cost )
 	if cost > 10000 then
 		return string.format( "|cffffffff%d|r|cffffd700g|r |cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", gold, silver, copper)
 	elseif cost > 100 then
-		return string.format( "|cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", silver, copper)	
+		return string.format( "|cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", silver, copper)
 	else 
 		return string.format("|cffffffff%d|r|cffeda55fc|r", copper )
 	end
