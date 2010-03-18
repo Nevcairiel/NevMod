@@ -16,6 +16,10 @@ function NevMod:OnEnable()
 
 	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
+
+	for i=1,4 do
+		_G["GroupLootFrame"..i]:SetScale(1.2)
+	end
 end
 
 -- From SmoothDurability
