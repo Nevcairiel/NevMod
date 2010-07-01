@@ -190,32 +190,29 @@ end
 
 -- Buttons
 do
-	local function hide(self) self:Hide() end
-	
-	ChatFrameMenuButton:Hide()
-	
-	local frame
+	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide --Hide the chat shortcut button for emotes/languages/etc
+	ChatFrameMenuButton:Hide() --Hide the chat shortcut button for emotes/languages/etc
+	FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
+	FriendsMicroButton:Hide() --Hide the "Friends Online" count button
+
 	for i = 1, NUM_CHAT_WINDOWS do
-		frame = _G["ChatFrame"..i.."UpButton"]
-		frame:SetScript("OnShow", hide)
-		frame:Hide()
-		
-		frame = _G["ChatFrame"..i.."DownButton"]
-		frame:SetScript("OnShow", hide)
-		frame:Hide()
-		
-		frame = _G["ChatFrame"..i.."BottomButton"]
-		frame:SetScript("OnShow", hide)
-		frame:Hide()
+		local f = _G[format("%s%d%s", "ChatFrame", i, "ButtonFrame")]
+		f.Show = f.Hide --Hide the up/down arrows
+		f:Hide() --Hide the up/down arrows
+		_G[format("%s%d", "ChatFrame", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
 	end
 end
 
 -- Editbox
 do
-	local eb = ChatFrameEditBox
-	eb:ClearAllPoints()
-	eb:SetPoint("BOTTOMLEFT",  "ChatFrame1", "TOPLEFT",  -5, 0)
-	eb:SetPoint("BOTTOMRIGHT", "ChatFrame1", "TOPRIGHT", 5, 0)
+	for i =1, NUM_CHAT_WINDOWS do
+		local eb =  _G[format("%s%d%s", "ChatFrame", i, "EditBox")]
+		local cf = _G[format("%s%d", "ChatFrame", i)]
+		eb:ClearAllPoints()
+		eb:SetPoint("BOTTOMLEFT",  cf, "TOPLEFT",  -5, 0)
+		eb:SetPoint("BOTTOMRIGHT", cf, "TOPRIGHT", 5, 0)
+		eb:SetAltArrowKeyMode(false)
+	end
 end
 
 -- Scroll
