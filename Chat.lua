@@ -158,8 +158,8 @@ do
 		hasEditBox = 1,
 		hasWideEditBox = 1,
 		showAlert = 1,
-		OnShow = function()
-			local editBox = _G[this:GetName().."WideEditBox"]
+		OnShow = function(this)
+			local editBox = _G[this:GetName().."EditBox"]
 			if editBox then
 				editBox:SetText(currentLink)
 				editBox:SetFocus()
@@ -176,7 +176,7 @@ do
 				icon:Hide()
 			end
 		end,
-		EditBoxOnEscapePressed = function() this:GetParent():Hide() end,
+		EditBoxOnEscapePressed = function(this) this:GetParent():Hide() end,
 		timeout = 0,
 		whileDead = 1,
 		hideOnEscape = 1,
