@@ -140,17 +140,18 @@ do
 		c.AddMessage = AddMessageHook
 	end
 	
-	local currentLink, origItemRef
-	local function setItemRef(link, ...)
+	local currentLink, origItemRefSetHyperlink
+	local function setItemRefHyperlink(tooltip, link, ...)
 		if strsub(link, 1, 3) == "url" then
 			currentLink = strsub(link, 5)
 			StaticPopup_Show("SCMUrlCopyDialog")
+			tooltip:Hide()
 			return
 		end
-		return origItemRef(link, ...)
+		return origItemRefSetHyperlink(tooltip, link, ...)
 	end
-	origItemRef = _G.SetItemRef
-	_G.SetItemRef = setItemRef
+	origItemRefSetHyperlink = ItemRefTooltip.SetHyperlink
+	ItemRefTooltip.SetHyperlink = setItemRefHyperlink
 	
 	StaticPopupDialogs["SCMUrlCopyDialog"] = {
 		text = "URL",
