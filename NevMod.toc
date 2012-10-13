@@ -1,7 +1,7 @@
-## Interface: 30100
+## Interface: 50001
 ## Title: NevMod
 ## Author: Nevcairiel
-## OptionalDeps: Ace3, sRaidFrames
+## OptionalDeps: Ace3
 ## Version: 2.0
 
 NevMod.lua
