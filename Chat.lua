@@ -26,7 +26,6 @@ local stickyTypes = {
 	OFFICER = true,
 	RAID = true,
 	RAID_WARNING = true,
-	BATTLEGROUND = true,
 	CHANNEL = true,
 	EMOTE = false
 }
