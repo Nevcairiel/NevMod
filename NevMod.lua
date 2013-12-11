@@ -8,10 +8,12 @@ function NevMod:FixBuffPositions()
 	BuffFrame:ClearAllPoints()
 	BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -45, -30)
 	BuffFrame.SetPoint = function() end
+	BuffFrame:SetFrameStrata("MEDIUM")
 
 	ConsolidatedBuffs:ClearAllPoints()
 	ConsolidatedBuffs:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -20, -30)
 	ConsolidatedBuffs.SetPoint = function() end
+	ConsolidatedBuffs:SetFrameStrata("MEDIUM")
 end
 
 function NevMod:OnEnable()
