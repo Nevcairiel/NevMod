@@ -95,15 +95,6 @@ local urlPatterns = {
 	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
 }
 
-local hideLoot = { 
-	[40752] = true, -- Emblem of Heroism
-	[40753] = true, -- Emblem of Valor
-	[45624] = true, -- Emblem of Conquest
-	[47241] = true, -- Emblem of Triumph
-	[49426] = true, -- Emblem of Frost
-	[43228] = true, -- Stone Keeper's Shard
-}
-
 --[[ 
 	-------------------------------------------------------------
 	Code
@@ -248,18 +239,3 @@ do
 		cf:EnableMouseWheel(true)
 	end
 end
-
-local function lootfilter(self, event, msg)
-	local link = msg:match("^.* receives loot: (.-)x?%d*%.$")
-	if link and hideLoot[tonumber(link:match("item:(%d+)"))] then
-		return true
-	end
-end
-ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", lootfilter)
-
-local function dalaYell(self, event, msg)
-	if msg:find("^Reinforcements are needed on the Wintergrasp") then
-		return true
-	end
-end
-ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_YELL", dalaYell)
