@@ -27,11 +27,6 @@ function NevMod:OnEnable()
 	for i=1,4 do
 		_G["GroupLootFrame"..i]:SetScale(1.2)
 	end
-
-	if sRaidFrames then
-		sRaidFrames.statusSpellTable[GetSpellInfo(774)] = 774
-		sRaidFrames:AddStatusMap("Buff_774", 50, {"indicator-tr"}, GetSpellInfo(774), {r=1, g=1, b=0, a=1}, false, {playerOnly = true})
-	end
 end
 
 -- From SmoothDurability
