@@ -18,6 +18,7 @@ end
 
 function NevMod:OnEnable()
 	self:RegisterEvent( "MERCHANT_SHOW", "RepairAndSell" )
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateTracking")
 	ConsoleExec("cameraDistanceMaxFactor 4")
 
 	MiniMapInstanceDifficulty:ClearAllPoints()
@@ -88,5 +89,25 @@ function NevMod:RepairAndSell()
 				UseContainerItem(bag, slot)
 			end
 		end
+	end
+end
+
+local function ToggleTargetTracking(mode)
+	local count = GetNumTrackingTypes()
+	for id = 1, count do
+		local name = GetTrackingInfo(id)
+		if name == "Target" then
+			SetTracking(id, mode)
+			return
+		end
+	end
+end
+
+function NevMod:UpdateTracking()
+	local classificiation = UnitClassification("target")
+	if classificiation and (classificiation == "rare" or classificiation == "rareelite") then
+		ToggleTargetTracking(true)
+	else
+		ToggleTargetTracking(false)
 	end
 end
