@@ -20,12 +20,13 @@ local timeStampsEnabled = {
 local stickyTypes = {
 	SAY = true,
 	WHISPER = false,
-	YELL = true,
+	YELL = false,
 	PARTY = true,
 	GUILD = true,
 	OFFICER = true,
 	RAID = true,
 	RAID_WARNING = true,
+	INSTANCE_CHAT = true,
 	CHANNEL = true,
 	EMOTE = false
 }
