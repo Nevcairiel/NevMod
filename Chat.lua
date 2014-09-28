@@ -48,6 +48,17 @@ local channelNamePattern = {
 	["%[%d+%.%s(%w*)%]"] = "|cff990066(|r%1|cff990066)|r",
 }
 
+local raidIcons = {
+	["%{stern%}"] = "{rt1}",
+	["%{kreis%}"] = "{rt2}",
+	["%{diamant%}"] = "{rt3}",
+	["%{dreieck%}"] = "{rt4}",
+	["%{mond%}"] = "{rt5}",
+	["%{quadrat%}"] = "{rt6}",
+	["%{kreuz%}"] = "{rt7}",
+	["%{totenschädel%}"] = "{rt8}",
+}
+
 -- Mouse Scroll
 local scrollLines = 1
 
@@ -235,4 +246,17 @@ do
 		cf:SetScript("OnMouseWheel", scroll)
 		cf:EnableMouseWheel(true)
 	end
+end
+
+-- raid icons
+local function filter(self, event, msg, ...)
+	if msg then
+		for k, v in pairs(raidIcons) do
+			msg = msg:gsub(k, v)
+		end
+	end
+	return false, msg, ...
+end
+for _,event in pairs{"SAY", "YELL", "GUILD", "GUILD_OFFICER", "WHISPER", "WHISPER_INFORM", "PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "INSTANCE_CHAT", "INSTANCE_CHAT_LEADER", "BATTLEGROUND", "BATTLEGROUND_LEADER", "CHANNEL"} do
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_"..event, filter)
 end
