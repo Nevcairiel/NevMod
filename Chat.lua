@@ -189,23 +189,29 @@ for k, v in pairs(stickyTypes) do
 end
 
 -- Buttons
+local FixChatButtons
 do
 	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide --Hide the chat shortcut button for emotes/languages/etc
 	ChatFrameMenuButton:Hide() --Hide the chat shortcut button for emotes/languages/etc
 	FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
 	FriendsMicroButton:Hide() --Hide the "Friends Online" count button
 
-	for i = 1, NUM_CHAT_WINDOWS do
+	function FixChatButtons(i)
 		local f = _G[format("%s%d%s", "ChatFrame", i, "ButtonFrame")]
 		f.Show = f.Hide --Hide the up/down arrows
 		f:Hide() --Hide the up/down arrows
 		_G[format("%s%d", "ChatFrame", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
 	end
+
+	for i = 1, NUM_CHAT_WINDOWS do
+		FixChatButtons(i)
+	end
 end
 
 -- Editbox
+local FixEditBox
 do
-	for i =1, NUM_CHAT_WINDOWS do
+	function FixEditBox(i)
 		local eb =  _G[format("%s%d%s", "ChatFrame", i, "EditBox")]
 		local cf = _G[format("%s%d", "ChatFrame", i)]
 		eb:ClearAllPoints()
@@ -213,9 +219,14 @@ do
 		eb:SetPoint("BOTTOMRIGHT", cf, "TOPRIGHT", 5, 0)
 		eb:SetAltArrowKeyMode(false)
 	end
+
+	for i =1, NUM_CHAT_WINDOWS do
+		FixEditBox(i)
+	end
 end
 
 -- Scroll
+local FixScroll
 do
 	local function scroll(self, arg1)
 		if arg1 > 0 then
@@ -240,13 +251,33 @@ do
 			end
 		end
 	end
-	
-	for i = 1, NUM_CHAT_WINDOWS do
+
+	function FixScroll(i)
 		local cf = _G["ChatFrame"..i]
 		cf:SetScript("OnMouseWheel", scroll)
 		cf:EnableMouseWheel(true)
 	end
+
+	for i = 1, NUM_CHAT_WINDOWS do
+		FixScroll(i)
+	end
 end
+
+for i = 1, NUM_CHAT_WINDOWS do
+	_G["ChatFrame"..i].isNevModAugmented = true
+end
+
+hooksecurefunc("FCF_OpenTemporaryWindow", function()
+	for id, frame in pairs(CHAT_FRAMES) do
+		local cf = _G[frame]
+		if not cf.isNevModAugmented then
+			FixChatButtons(id)
+			FixEditBox(id)
+			FixScroll(id)
+			cf.isNevModAugmented = true
+		end
+	end
+end)
 
 -- raid icons
 local function filter(self, event, msg, ...)
