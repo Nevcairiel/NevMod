@@ -49,14 +49,14 @@ local channelNamePattern = {
 }
 
 local raidIcons = {
-	["%{stern%}"] = "{rt1}",
-	["%{kreis%}"] = "{rt2}",
-	["%{diamant%}"] = "{rt3}",
-	["%{dreieck%}"] = "{rt4}",
-	["%{mond%}"] = "{rt5}",
-	["%{quadrat%}"] = "{rt6}",
-	["%{kreuz%}"] = "{rt7}",
-	["%{totenschädel%}"] = "{rt8}",
+	["%{[sS][tT][eE][rR][nN]%}"] = "{rt1}",
+	["%{[kK][rR][eE][iI][sS]%}"] = "{rt2}",
+	["%{[dD][iI][aA][mM][aA][nN][tT]%}"] = "{rt3}",
+	["%{[dD][rR][eE][iI][eE][cC][kK]%}"] = "{rt4}",
+	["%{[mM][oO][nN][dD]%}"] = "{rt5}",
+	["%{[qQ][uU][aA][dD][rR][aA][tT]%}"] = "{rt6}",
+	["%{[kK][rR][eE][uU][zZ]%}"] = "{rt7}",
+	["%{[tT][oO][tT][eE][nN][sS][cC][hH][äÄ][dD][eE][lL]%}"] = "{rt8}",
 }
 
 -- Mouse Scroll
