@@ -1,5 +1,10 @@
 local NevMod = LibStub("AceAddon-3.0"):NewAddon("NevMod", "AceEvent-3.0", "AceConsole-3.0")
 
+local lgist = LibStub("LibGroupInSpecT-1.1", true)
+if lgist then
+	lgist.debug = false
+end
+
 function NevMod:OnInitialize()
 	self:FixBuffPositions()
 end
