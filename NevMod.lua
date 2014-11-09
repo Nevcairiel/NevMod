@@ -28,6 +28,10 @@ function NevMod:OnEnable()
 
 	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
+	GuildInstanceDifficulty:ClearAllPoints()
+	GuildInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
+	MiniMapChallengeMode:ClearAllPoints()
+	MiniMapChallengeMode:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
 
 	for i=1,4 do
 		_G["GroupLootFrame"..i]:SetScale(1.2)
