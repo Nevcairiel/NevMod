@@ -56,7 +56,8 @@ local raidIcons = {
 	["%{[mM][oO][nN][dD]%}"] = "{rt5}",
 	["%{[qQ][uU][aA][dD][rR][aA][tT]%}"] = "{rt6}",
 	["%{[kK][rR][eE][uU][zZ]%}"] = "{rt7}",
-	["%{[tT][oO][tT][eE][nN][sS][cC][hH][äÄ][dD][eE][lL]%}"] = "{rt8}",
+	-- \195\132 Ä, \195\164 ä
+	["%{[tT][oO][tT][eE][nN][sS][cC][hH]\195[\132\164][dD][eE][lL]%}"] = "{rt8}",
 }
 
 -- Mouse Scroll
