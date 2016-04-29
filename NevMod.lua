@@ -36,6 +36,10 @@ function NevMod:OnEnable()
 	for i=1,4 do
 		_G["GroupLootFrame"..i]:SetScale(1.2)
 	end
+
+	AUCTIONATOR_V_TIPS = 0
+	AUCTIONATOR_A_TIPS = 0
+	AUCTIONATOR_D_TIPS = 0
 end
 
 -- From SmoothDurability
