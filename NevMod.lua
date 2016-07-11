@@ -31,7 +31,6 @@ end
 function NevMod:OnEnable()
 	self:RegisterEvent("MERCHANT_SHOW", "RepairAndSell")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateTracking")
-	ConsoleExec("cameraDistanceMaxFactor 4")
 
 	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
