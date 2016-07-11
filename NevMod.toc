@@ -1,4 +1,4 @@
-## Interface: 60000
+## Interface: 70000
 ## Title: NevMod
 ## Author: Nevcairiel
 ## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons-1.0
