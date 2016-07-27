@@ -8,6 +8,7 @@ core.lua
 
 chat.lua
 
+#equipsetswitcher.lua
 hbddebug.lua
 hideorderhallbar.lua
 lgistnodebug.lua
