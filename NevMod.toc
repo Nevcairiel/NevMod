@@ -8,6 +8,7 @@ core.lua
 
 chat.lua
 
+easydeleteconfirm.lua
 #equipsetswitcher.lua
 hbddebug.lua
 hideorderhallbar.lua
