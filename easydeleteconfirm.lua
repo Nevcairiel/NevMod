@@ -1,4 +1,4 @@
--- automatically repair and sell trash when visiting a vendor
+-- avoid having to type "DELETE" into the confirmation when destroying items
 local EasyDeleteConfirm = LibStub("AceAddon-3.0"):GetAddon("NevMod"):NewModule("EasyDeleteConfirm", "AceEvent-3.0")
 
 function EasyDeleteConfirm:OnEnable()
