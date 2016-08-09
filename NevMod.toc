@@ -11,6 +11,7 @@ chat.lua
 cameradistance.lua
 easydeleteconfirm.lua
 #equipsetswitcher.lua
+germanraidicons.lua
 hbddebug.lua
 hideorderhallbar.lua
 lgistnodebug.lua
