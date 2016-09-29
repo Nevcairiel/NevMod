@@ -182,8 +182,14 @@ local FixChatButtons
 do
 	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide --Hide the chat shortcut button for emotes/languages/etc
 	ChatFrameMenuButton:Hide() --Hide the chat shortcut button for emotes/languages/etc
-	FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
-	FriendsMicroButton:Hide() --Hide the "Friends Online" count button
+	if FriendsMicroButton then
+		FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
+		FriendsMicroButton:Hide() --Hide the "Friends Online" count button
+	end
+	if QuickJoinToastButton then
+		QuickJoinToastButton.Show = QuickJoinToastButton.Hide
+		QuickJoinToastButton:Hide()
+	end
 
 	function FixChatButtons(i)
 		local f = _G[format("%s%d%s", "ChatFrame", i, "ButtonFrame")]
