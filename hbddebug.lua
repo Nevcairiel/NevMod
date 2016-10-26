@@ -7,7 +7,7 @@ if HBD then
 	function checkInstanceId()
 		local x,y,instance = HBD:GetPlayerWorldPosition()
 		local zone = HBD:GetPlayerZone()
-		if HBD.mapData[zone] and HBD.mapData[zone].instance ~= instance and zone ~= -1 then
+		if instance and HBD.mapData[zone] and HBD.mapData[zone].instance ~= instance and zone ~= -1 then
 			print(format("HereBeDragons-1.0: Instance ID %d does not match %d for zone %d", instance, HBD.mapData[zone].instance, zone))
 		end
 	end
