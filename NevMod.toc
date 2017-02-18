@@ -12,6 +12,7 @@ chatfilter.lua
 cameradistance.lua
 easydeleteconfirm.lua
 #equipsetswitcher.lua
+frenzyregenskin.lua
 germanraidicons.lua
 hbddebug.lua
 hideorderhallbar.lua
