@@ -1,7 +1,7 @@
 ## Interface: 70100
 ## Title: NevMod
 ## Author: Nevcairiel
-## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons-1.0, Auctionator
+## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons-1.0, Auctionator, Kui_Nameplates_Core
 ## Version: 2.0
 
 core.lua
@@ -16,6 +16,7 @@ frenzyregenskin.lua
 germanraidicons.lua
 hbddebug.lua
 hideorderhallbar.lua
+kui.sanguine.lua
 lgistnodebug.lua
 lootscale.lua
 minimapbanners.lua
