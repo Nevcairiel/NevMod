@@ -56,9 +56,14 @@ function RepairAndSell:RepairAndSell()
 		for slot=0,GetContainerNumSlots(bag) do
 			local link = GetContainerItemLink(bag, slot)
 			if link and select(3, GetItemInfo(link)) == 0 then
-				ShowMerchantSellCursor(1)
+				if ShowMerchantSellCursor then
+					ShowMerchantSellCursor(1)
+				else
+					SetCursor("BUY_CURSOR")
+				end
 				UseContainerItem(bag, slot)
 			end
 		end
 	end
+	ResetCursor()
 end
