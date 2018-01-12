@@ -24,6 +24,5 @@ movebuffs.lua
 movementspeed.lua
 repairandsell.lua
 smarttracking.lua
-wqtap.lua
 
 #noraidspam.lua
