@@ -6,7 +6,7 @@
 
 core.lua
 
-chat.lua
+#chat.lua
 chatfilter.lua
 
 cameradistance.lua
