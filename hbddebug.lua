@@ -22,5 +22,5 @@ if HBD then
 		end
 	end
 	)
-	HBD.RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, mapType) print(format("NevMod: Location changed to %d %d", zone, mapType)) checkInstanceId() end)
+	HBD.RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, mapType) print(format("NevMod: Location changed to %d %d (%s)", zone, mapType, HBD:GetLocalizedMap(zone))) checkInstanceId() end)
 end
