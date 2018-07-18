@@ -1,5 +1,5 @@
 -- HereBeDragons debug helper
-local HBD = LibStub("HereBeDragons-1.0", true)
+local HBD = LibStub("HereBeDragons-2.0", true)
 if HBD then
 	local f = CreateFrame("Frame")
 	local elapsed_total = 0
@@ -22,5 +22,5 @@ if HBD then
 		end
 	end
 	)
-	LibStub("HereBeDragons-1.0").RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, level, mapFile, isMicro) print(format("NevMod: Location changed to %d %d %s %s", zone, level, tostring(mapFile), tostring(isMicro))); checkInstanceId() end)
+	HBD.RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, mapType) print(format("NevMod: Location changed to %d %d", zone, mapType)) checkInstanceId() end)
 end

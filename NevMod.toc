@@ -1,7 +1,7 @@
 ## Interface: 70200
 ## Title: NevMod
 ## Author: Nevcairiel
-## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons-1.0, Auctionator, Kui_Nameplates_Core, WorldQuestTracker
+## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons, Auctionator, Kui_Nameplates_Core, WorldQuestTracker
 ## Version: 2.0
 
 core.lua
