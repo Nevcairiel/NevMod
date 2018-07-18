@@ -143,7 +143,7 @@ do
 	
 	StaticPopupDialogs["SCMUrlCopyDialog"] = {
 		text = "URL",
-		button2 = TEXT(CLOSE),
+		button2 = CLOSE,
 		hasEditBox = 1,
 		hasWideEditBox = 1,
 		showAlert = 1,
@@ -180,22 +180,24 @@ end
 -- Buttons
 local FixChatButtons
 do
-	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide --Hide the chat shortcut button for emotes/languages/etc
-	ChatFrameMenuButton:Hide() --Hide the chat shortcut button for emotes/languages/etc
-	if FriendsMicroButton then
-		FriendsMicroButton.Show = FriendsMicroButton.Hide --Hide the "Friends Online" count button
-		FriendsMicroButton:Hide() --Hide the "Friends Online" count button
-	end
-	if QuickJoinToastButton then
-		QuickJoinToastButton.Show = QuickJoinToastButton.Hide
-		QuickJoinToastButton:Hide()
-	end
+	-- Hide the chat shortcut button for emotes/languages/etc
+	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
+	ChatFrameMenuButton:Hide()
+
+	-- Hide the quick join toast button
+	QuickJoinToastButton.Show = QuickJoinToastButton.Hide
+	QuickJoinToastButton:Hide()
+
+	-- Hide the Chat Channel button
+	ChatFrameChannelButton.Show = ChatFrameChannelButton.Hide
+	ChatFrameChannelButton:Hide()
 
 	function FixChatButtons(i)
-		local f = _G[format("%s%d%s", "ChatFrame", i, "ButtonFrame")]
-		f.Show = f.Hide --Hide the up/down arrows
-		f:Hide() --Hide the up/down arrows
-		_G[format("%s%d", "ChatFrame", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
+		local f = _G[format("ChatFrame%dButtonFrame", i)]
+		 -- Hide the button container
+		f.Show = f.Hide
+		f:Hide()
+		_G[format("ChatFrame%d", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
 	end
 
 	for i = 1, NUM_CHAT_WINDOWS do
