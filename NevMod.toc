@@ -22,6 +22,7 @@ lootscale.lua
 minimapbanners.lua
 movebuffs.lua
 movementspeed.lua
+nohonorcooldowncount.lua
 repairandsell.lua
 smarttracking.lua
 
