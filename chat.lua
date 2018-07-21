@@ -275,3 +275,6 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
 		end
 	end
 end)
+
+-- disable timestamps
+setfenv(ChatFrame_MessageEventHandler, setmetatable({CHAT_TIMESTAMP_FORMAT = false}, {__index = _G}))
