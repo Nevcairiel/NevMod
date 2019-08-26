@@ -24,5 +24,7 @@ movementspeed.lua
 moveuiwidget.lua
 repairandsell.lua
 smarttracking.lua
+wqtfilter.lua
+wqtframeanchor.lua
 
 #noraidspam.lua
