@@ -1,5 +1,5 @@
 -- add the movement speed to the character stat sheet
-
+if not CharacterStatsPane then return end
 function PaperDollFrame_SetMovementSpeed(statFrame, unit)
 	statFrame.wasSwimming = nil
 	statFrame.unit = unit

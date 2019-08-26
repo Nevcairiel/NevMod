@@ -185,8 +185,10 @@ do
 	ChatFrameMenuButton:Hide()
 
 	-- Hide the quick join toast button
-	QuickJoinToastButton.Show = QuickJoinToastButton.Hide
-	QuickJoinToastButton:Hide()
+	if QuickJoinToastButton then
+		QuickJoinToastButton.Show = QuickJoinToastButton.Hide
+		QuickJoinToastButton:Hide()
+	end
 
 	-- Hide the Chat Channel button
 	ChatFrameChannelButton.Show = ChatFrameChannelButton.Hide

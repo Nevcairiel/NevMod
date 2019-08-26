@@ -1,5 +1,5 @@
 -- move minimap banners
-
+if not MiniMapInstanceDifficulty then return end
 MiniMapInstanceDifficulty:ClearAllPoints()
 MiniMapInstanceDifficulty:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 8, 10)
 GuildInstanceDifficulty:ClearAllPoints()

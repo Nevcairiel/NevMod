@@ -1,4 +1,5 @@
 -- hide the orderhall commandbar
+if not OrderHall_LoadUI then return end
 hooksecurefunc("OrderHall_LoadUI",
 	function()
 		if OrderHallCommandBar then
