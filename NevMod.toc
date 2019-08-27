@@ -13,6 +13,7 @@ cameradistance.lua
 easydeleteconfirm.lua
 #equipsetswitcher.lua
 germanraidicons.lua
+fastloot.lua
 hbddebug.lua
 hideorderhallbar.lua
 kui.sanguine.lua
