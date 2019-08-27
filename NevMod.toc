@@ -24,6 +24,7 @@ movementspeed.lua
 moveuiwidget.lua
 repairandsell.lua
 smarttracking.lua
+vendorprice.lua
 wqtfilter.lua
 wqtframeanchor.lua
 
