@@ -28,7 +28,7 @@ function RepairAndSell:RepairAndSell()
 		if money < cost then
 			self:Print( string.format("Autorepair failed, you need %s more.", CostString( cost - money )) )
 		elseif cost > 0 then
-			local guildRepair = CanGuildBankRepair()
+			local guildRepair = CanGuildBankRepair and CanGuildBankRepair()
 			if guildRepair then
 				local funds = GetGuildBankWithdrawMoney()  
 				if funds == -1 then  
