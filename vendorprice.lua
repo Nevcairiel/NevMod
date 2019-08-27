@@ -1,4 +1,5 @@
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
+local SELL_PRICE_TEXT = format("%s:", SELL_PRICE)
 
 local function SetGameToolTipPrice(tt)
 	if not MerchantFrame:IsShown() then
@@ -7,7 +8,6 @@ local function SetGameToolTipPrice(tt)
 			local itemSellPrice = select(11, GetItemInfo(itemLink))
 			if itemSellPrice and itemSellPrice > 0 then
 				local container = GetMouseFocus()
-				local name = container:GetName()
 				local object = container:GetObjectType()
 				local count
 				if object == "Button" then -- ContainerFrameItem, QuestInfoItem, PaperDollItem
