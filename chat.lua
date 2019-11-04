@@ -52,7 +52,7 @@ local channelNamePattern = {
 local scrollLines = 1
 
 -- UrlCopy
-local urlStyle = " |cffffffff|Hurl:%s|h[%s]|h|r "
+local urlStyle = " |cffffffff|Hgarrmission:nevurl:%s|h[%s]|h|r "
 
 local urlPatterns = {
 		-- X://Y url
@@ -128,18 +128,13 @@ do
 		c.AddMessage = AddMessageHook
 	end
 	
-	local currentLink, origItemRefSetHyperlink
-	local function setItemRefHyperlink(tooltip, link, ...)
-		if strsub(link, 1, 3) == "url" then
-			currentLink = strsub(link, 5)
+	local currentLink
+	hooksecurefunc("SetItemRef", function(link)
+		if strsub(link, 1, 19) == "garrmission:nevurl:" then
+			currentLink = strsub(link, 20)
 			StaticPopup_Show("SCMUrlCopyDialog")
-			tooltip:Hide()
-			return
 		end
-		return origItemRefSetHyperlink(tooltip, link, ...)
-	end
-	origItemRefSetHyperlink = ItemRefTooltip.SetHyperlink
-	ItemRefTooltip.SetHyperlink = setItemRefHyperlink
+	end)
 	
 	StaticPopupDialogs["SCMUrlCopyDialog"] = {
 		text = "URL",
