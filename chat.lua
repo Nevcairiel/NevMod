@@ -52,44 +52,44 @@ local channelNamePattern = {
 local scrollLines = 1
 
 -- UrlCopy
-local urlStyle = " |cffffffff|Hgarrmission:nevurl:%s|h[%s]|h|r "
+local urlStyle = " |cffffffff|Hgarrmission:nevurl:%1$s|h[%1$s]|h|r "
 
 local urlPatterns = {
 		-- X://Y url
-	{ "^(%a[%w%.+-]+://%S+)", "%1"},
-	{ "%f[%S](%a[%w%.+-]+://%S+)", "%1"},
+	{ "^(%a[%w%.+-]+://%S+)", "%s"},
+	{ "%f[%S](%a[%w%.+-]+://%S+)", "%s"},
 		-- www.X.Y url
-	{ "^(www%.[-%w_%%]+%.%S+)", "%1"},
-	{ "%f[%S](www%.[-%w_%%]+%.%S+)", "%1"},
+	{ "^(www%.[-%w_%%]+%.%S+)", "%s"},
+	{ "%f[%S](www%.[-%w_%%]+%.%S+)", "%s"},
 		-- "W X"@Y.Z email (this is seriously a valid email)
 	--{ pattern = '^(%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
 	--{ pattern = '%f[%S](%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
 		-- X@Y.Z email
-	{ "(%S+@[-%w_%%%.]+%.(%a%a+))", "%1"},
+	{ "(%S+@[-%w_%%%.]+%.(%a%a+))", "%s"},
 		-- XXX.YYY.ZZZ.WWW:VVVV/UUUUU IPv4 address with port and path
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%s"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%s"},
 		-- XXX.YYY.ZZZ.WWW:VVVV IPv4 address with port (IP of ts server for example)
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
 		-- XXX.YYY.ZZZ.WWW/VVVVV IPv4 address with path
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%1"},
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%s"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%s"},
 		-- XXX.YYY.ZZZ.WWW IPv4 address
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%1"},
+	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%s"},
+	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%s"},
 		-- X.Y.Z:WWWW/VVVVV url with port and path
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%1"},
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%s"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%s"},
 		-- X.Y.Z:WWWW url with port (ts server for example)
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%1"},
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
 		-- X.Y.Z/WWWWW url with path
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%1"},
+	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%s"},
+	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%s"},
 		-- X.Y.Z url
-	--{ "^([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
-	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%1"},
+	--{ "^([-%w_%%]+%.[-%w_%%]+%.%S+)", "%s"},
+	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%s"},
 }
 
 --[[ 
@@ -97,7 +97,7 @@ local urlPatterns = {
 	Code
 ]]
 local _G = _G
-local format, gsub, strlen, strsub = string.format, string.gsub, string.len, string.sub
+local format, gsub, strlen, strsub, strfind = string.format, string.gsub, string.len, string.sub, string.find
 local pairs, type, date = pairs, type, date
 
 -- Timestamps + Channel Names + UrlCopy (AddMessage hooks)
@@ -113,7 +113,7 @@ do
 			if strlen(text) > 7 then
 				for i = 1, #urlPatterns do
 					local v = urlPatterns[i]
-					text = gsub(text, v[1], format(urlStyle, v[2], v[2]))
+					text = gsub(text, v[1], function(str) if strfind(str, ".blp:", 1, true) or strfind(str, ".tga:", 1, true) then return str else return format(urlStyle, str) end end)
 				end
 			end
 			-- Time Stamp
