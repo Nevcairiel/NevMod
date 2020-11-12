@@ -113,7 +113,7 @@ do
 			if strlen(text) > 7 then
 				for i = 1, #urlPatterns do
 					local v = urlPatterns[i]
-					text = gsub(text, v[1], function(str) if strfind(str, ".blp:", 1, true) or strfind(str, ".tga:", 1, true) then return str else return format(urlStyle, str) end end)
+					text = gsub(text, v[1], function(str) if strfind(str:lower(), ".blp:", 1, true) or strfind(str:lower(), ".tga:", 1, true) then return str else return format(urlStyle, str) end end)
 				end
 			end
 			-- Time Stamp
