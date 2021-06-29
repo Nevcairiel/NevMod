@@ -26,7 +26,7 @@ moveuiwidget.lua
 repairandsell.lua
 smarttracking.lua
 vendorprice.lua
-wqtfilter.lua
-wqtframeanchor.lua
+#wqtfilter.lua
+#wqtframeanchor.lua
 
 #noraidspam.lua
