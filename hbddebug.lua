@@ -22,7 +22,7 @@ if HBD then
 		end
 	end
 	)
-	HBD.RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, mapType) print(format("NevMod: Location changed to %d %d (%s)", zone, mapType, HBD:GetLocalizedMap(zone) or "")) checkInstanceId() end)
+	HBD.RegisterCallback("NevMod", "PlayerZoneChanged", function(_, zone, mapType) print(format("NevMod: Location changed to %s %s (%s)", tostring(zone), tostring(mapType), HBD:GetLocalizedMap(zone) or "")) checkInstanceId() end)
 
 	HBD.___DIIDO = setmetatable(HBD.___DIIDO, { __newindex = function(t, k, v) rawset(t, k, v); print(format("HBD: Found a new dynamic instance ID override %d -> %d, in zone %d", k, v, (HBD:GetPlayerZone()))) end })
 end
