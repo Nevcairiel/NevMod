@@ -1,5 +1,5 @@
 --[[
-	Configuration 
+	Configuration
 ]]
 
 -- Timestamps
@@ -92,7 +92,7 @@ local urlPatterns = {
 	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%s"},
 }
 
---[[ 
+--[[
 	-------------------------------------------------------------
 	Code
 ]]
@@ -127,7 +127,7 @@ do
 		orig[c] = c.AddMessage
 		c.AddMessage = AddMessageHook
 	end
-	
+
 	local currentLink
 	hooksecurefunc("SetItemRef", function(link)
 		if strsub(link, 1, 19) == "garrmission:nevurl:" then
@@ -135,7 +135,7 @@ do
 			StaticPopup_Show("SCMUrlCopyDialog")
 		end
 	end)
-	
+
 	StaticPopupDialogs["SCMUrlCopyDialog"] = {
 		text = "URL",
 		button2 = CLOSE,
@@ -200,6 +200,8 @@ do
 	for i = 1, NUM_CHAT_WINDOWS do
 		FixChatButtons(i)
 	end
+
+	hooksecurefunc(ChatFrame1, "UpdateClampOffsets", function(frame) frame:SetClampRectInsets(0,0,0,0) end)
 end
 
 -- Editbox
@@ -274,4 +276,4 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
 end)
 
 -- disable timestamps
-setfenv(ChatFrame_MessageEventHandler, setmetatable({CHAT_TIMESTAMP_FORMAT = false}, {__index = _G}))
+setfenv(ChatFrame_MessageEventHandler, setmetatable({CHAT_TIMESTAMP_FORMAT = false, GetChatTimestampFormat = function() end}, {__index = _G}))
