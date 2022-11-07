@@ -201,7 +201,9 @@ do
 		FixChatButtons(i)
 	end
 
-	hooksecurefunc(ChatFrame1, "UpdateClampOffsets", function(frame) frame:SetClampRectInsets(0,0,0,0) end)
+	if ChatFrame1.UpdateClampOffsets then
+		hooksecurefunc(ChatFrame1, "UpdateClampOffsets", function(frame) frame:SetClampRectInsets(0,0,0,0) end)
+	end
 end
 
 -- Editbox
