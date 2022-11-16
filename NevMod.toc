@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 100002
 ## Title: NevMod
 ## Author: Nevcairiel
 ## OptionalDeps: Ace3, LibGroupInSpecT-1.1, HereBeDragons, Auctionator, Kui_Nameplates_Core, WorldQuestTracker
