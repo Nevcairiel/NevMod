@@ -1,12 +1,19 @@
 --[[
+	Chat tweaks
+
+	Everything in here is built to keep Blizzard's chat message handling untainted, so that
+	secret chat values (chat messaging lockdown) keep working. In particular AddMessage is never
+	replaced and no chat global strings are overridden.
+]]
+
+--[[
 	Configuration
 ]]
 
--- Timestamps
-local chatTimestampFmt = "%H:%M:%S "
+-- Timestamps, applied through the built-in timestamp setting (false to leave the setting alone)
+local timestampFormat = TIMESTAMP_FORMAT_HHMMSS_24HR or "%H:%M:%S "
 
-
--- Sticky
+-- Sticky chat types
 local stickyTypes = {
 	SAY = true,
 	WHISPER = false,
@@ -18,68 +25,52 @@ local stickyTypes = {
 	RAID_WARNING = true,
 	INSTANCE_CHAT = true,
 	CHANNEL = true,
-	EMOTE = false
+	EMOTE = false,
 }
 
--- Channel Names
-local channelNamePattern = {
-	["%[Guild%]"] = "(G)",
-	["%[Party%]"] = "(P)",
-	["%[Raid%]"] = "(R)",
-	["%[Party Leader%]"] = "(PL)",
-	["%[Dungeon Guide%]"] = "(DG)",
-	["%[Instance%]"] = "(I)",
-	["%[Instance Leader%]"] = "|cffff3399(|rIL|cffff3399)|r",
-	["%[Raid Leader%]"] = "|cffff3399(|rRL|cffff3399)|r",
-	["%[Raid Warning%]"] = "|cffff0000(|rRW|cffff0000)|r",
-	["%[Officer%]"] = "(O)",
-	["%[Battleground%]"] = "|cffff3399(|rBG|cffff3399)|r",
-	["%[Battleground Leader%]"] = "|cffff0000(|rBGL|cffff0000)|r",
-	["%[%d+%.%s(%w*)%]"] = "|cff990066(|r%1|cff990066)|r",
+-- Short channel tags, keyed by the global string that holds the long tag
+local shortChannelTags = {
+	CHAT_GUILD_GET = "(G)",
+	CHAT_OFFICER_GET = "(O)",
+	CHAT_PARTY_GET = "(P)",
+	CHAT_PARTY_LEADER_GET = "(PL)",
+	CHAT_PARTY_GUIDE_GET = "(DG)",
+	CHAT_RAID_GET = "(R)",
+	CHAT_RAID_LEADER_GET = "|cffff3399(|rRL|cffff3399)|r",
+	CHAT_RAID_WARNING_GET = "|cffff0000(|rRW|cffff0000)|r",
+	CHAT_INSTANCE_CHAT_GET = "(I)",
+	CHAT_INSTANCE_CHAT_LEADER_GET = "|cffff3399(|rIL|cffff3399)|r",
 }
 
--- Mouse Scroll
+-- Tag for numbered channels, "[2. Trade - City]" turns into this with the channel number and the
+-- first word of the name
+local numberedChannelTag = "|cff990066(|r%s. %s|cff990066)|r"
+
+-- Lines scrolled per mouse wheel step (shift: top/bottom, ctrl: one page)
 local scrollLines = 1
 
--- UrlCopy
-local urlStyle = " |cffffffff|Hgarrmission:nevurl:%1$s|h[%1$s]|h|r "
+-- Clickable URLs
+local urlLinkFormat = "|cffffffff|Haddon:NevMod:url:%s|h[%s]|h|r"
 
-local urlPatterns = {
-		-- X://Y url
-	{ "^(%a[%w%.+-]+://%S+)", "%s"},
-	{ "%f[%S](%a[%w%.+-]+://%S+)", "%s"},
-		-- www.X.Y url
-	{ "^(www%.[-%w_%%]+%.%S+)", "%s"},
-	{ "%f[%S](www%.[-%w_%%]+%.%S+)", "%s"},
-		-- "W X"@Y.Z email (this is seriously a valid email)
-	--{ pattern = '^(%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
-	--{ pattern = '%f[%S](%"[^%"]+%"@[-%w_%%%.]+%.(%a%a+))', matchfunc=Link_TLD},
-		-- X@Y.Z email
-	{ "(%S+@[-%w_%%%.]+%.(%a%a+))", "%s"},
-		-- XXX.YYY.ZZZ.WWW:VVVV/UUUUU IPv4 address with port and path
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%s"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d/%S+)", "%s"},
-		-- XXX.YYY.ZZZ.WWW:VVVV IPv4 address with port (IP of ts server for example)
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d:[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
-		-- XXX.YYY.ZZZ.WWW/VVVVV IPv4 address with path
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%s"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%/%S+)", "%s"},
-		-- XXX.YYY.ZZZ.WWW IPv4 address
-	{ "^([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%s"},
-	{ "%f[%S]([0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%.[0-2]?%d?%d%)%f[%D]", "%s"},
-		-- X.Y.Z:WWWW/VVVVV url with port and path
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%s"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d/%S+)", "%s"},
-		-- X.Y.Z:WWWW url with port (ts server for example)
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+):[0-6]?%d?%d?%d?%d)%f[%D]", "%s"},
-		-- X.Y.Z/WWWWW url with path
-	{ "^([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%s"},
-	{ "%f[%S]([-%w_%%%.]+[-%w_%%]%.(%a%a+)/%S+)", "%s"},
-		-- X.Y.Z url
-	--{ "^([-%w_%%]+%.[-%w_%%]+%.%S+)", "%s"},
-	--{ "%f[%S]([-%w_%%]+%.[-%w_%%]+%.%S+)", "%s"},
+local urlEvents = {
+	"CHAT_MSG_SAY",
+	"CHAT_MSG_YELL",
+	"CHAT_MSG_EMOTE",
+	"CHAT_MSG_WHISPER",
+	"CHAT_MSG_WHISPER_INFORM",
+	"CHAT_MSG_BN_WHISPER",
+	"CHAT_MSG_BN_WHISPER_INFORM",
+	"CHAT_MSG_GUILD",
+	"CHAT_MSG_OFFICER",
+	"CHAT_MSG_PARTY",
+	"CHAT_MSG_PARTY_LEADER",
+	"CHAT_MSG_RAID",
+	"CHAT_MSG_RAID_LEADER",
+	"CHAT_MSG_RAID_WARNING",
+	"CHAT_MSG_INSTANCE_CHAT",
+	"CHAT_MSG_INSTANCE_CHAT_LEADER",
+	"CHAT_MSG_CHANNEL",
+	"CHAT_MSG_COMMUNITIES_CHANNEL",
 }
 
 --[[
@@ -87,186 +78,286 @@ local urlPatterns = {
 	Code
 ]]
 local _G = _G
-local format, gsub, strlen, strsub, strfind = string.format, string.gsub, string.len, string.sub, string.find
-local pairs, type, date = pairs, type, date
+local type, pairs, ipairs = type, pairs, ipairs
+local issecretvalue = issecretvalue
 
--- Timestamps + Channel Names + UrlCopy (AddMessage hooks)
-do
-	local orig = {}
-	local function AddMessageHook(frame, text, ...)
-		if type(text) == "string" then
-			-- Channel Names
-			for k, v in pairs(channelNamePattern) do
-				text = gsub(text, k, v)
-			end
-			-- url copy
-			if strlen(text) > 7 then
-				for i = 1, #urlPatterns do
-					local v = urlPatterns[i]
-					text = gsub(text, v[1], function(str) if strfind(str:lower(), ".blp:", 1, true) or strfind(str:lower(), ".tga:", 1, true) then return str else return format(urlStyle, str) end end)
-				end
-			end
-			-- Time Stamp
-			if chatTimestampFmt then
-				if not text:find("^%d+:%d+:%d+")  then
-					text = BetterDate(chatTimestampFmt, time())..text
-				end
-			end
-		end
-		return orig[frame](frame, text, ...)
-	end
-
-	for i = 1, NUM_CHAT_WINDOWS do
-		local c = _G["ChatFrame"..i]
-		orig[c] = c.AddMessage
-		c.AddMessage = AddMessageHook
-	end
-
-	local currentLink
-	hooksecurefunc("SetItemRef", function(link)
-		if strsub(link, 1, 19) == "garrmission:nevurl:" then
-			currentLink = strsub(link, 20)
-			StaticPopup_Show("SCMUrlCopyDialog")
+-- Timestamps
+if timestampFormat then
+	local frame = CreateFrame("Frame")
+	frame:RegisterEvent("PLAYER_LOGIN")
+	frame:SetScript("OnEvent", function()
+		if C_CVar.GetCVar("showTimestamps") ~= timestampFormat then
+			C_CVar.SetCVar("showTimestamps", timestampFormat)
 		end
 	end)
+end
 
-	StaticPopupDialogs["SCMUrlCopyDialog"] = {
+-- Sticky
+for chatType, sticky in pairs(stickyTypes) do
+	local info = ChatTypeInfo[chatType]
+	local value = sticky and 1 or 0
+	-- only touch entries that actually differ, to keep the rest of the table untainted
+	if info and info.sticky ~= value then
+		info.sticky = value
+	end
+end
+
+-- Short channel tags
+-- The long tags are baked into the line by Blizzard's message formatting, and neither that code
+-- nor its format strings can be changed without tainting it. So the line is rewritten right after
+-- it was added. Lines with secret text can't be rewritten and keep their long tag.
+local ShortenChannelTags
+do
+	local linkedTags = {} -- tags shown inside a channel link, long tag -> short tag
+	local plainTags = {} -- tags without a link, list of { "[Long Tag]", short tag }
+
+	for globalName, short in pairs(shortChannelTags) do
+		local format = _G[globalName]
+		local tag = type(format) == "string" and format:match("%[(.-)%]")
+		if tag then
+			if format:find("|Hchannel:", 1, true) then
+				linkedTags[tag] = short
+			else
+				plainTags[#plainTags + 1] = { "[" .. tag .. "]", short }
+			end
+		end
+	end
+
+	local function ReplaceLinkedTag(linkStart, tag, linkEnd)
+		local short = linkedTags[tag]
+		if not short then
+			local number, name = tag:match("^(%d+)%.%s*([^%s%]]+)")
+			if number then
+				short = numberedChannelTag:format(number, name)
+			end
+		end
+		if short then
+			return linkStart .. short .. linkEnd
+		end
+	end
+
+	function ShortenChannelTags(text)
+		if not text:find("[", 1, true) then
+			return text
+		end
+
+		local count
+		text, count = text:gsub("(|Hchannel:[^|]*|h)%[([^%]]*)%](|h)", ReplaceLinkedTag, 1)
+		if count > 0 then
+			return text
+		end
+
+		for _, plain in ipairs(plainTags) do
+			local s, e = text:find(plain[1], 1, true)
+			if s then
+				-- only at the start of the line, allowing for a timestamp in front of it
+				local prefix = text:sub(1, s - 1)
+				if #prefix <= 12 and not prefix:find("[%[|]") then
+					return prefix .. plain[2] .. text:sub(e + 1)
+				end
+			end
+		end
+
+		return text
+	end
+end
+
+local function OnMessageAdded(frame, text)
+	if issecretvalue(text) or type(text) ~= "string" then
+		return
+	end
+
+	local shortened = ShortenChannelTags(text)
+	if shortened == text then
+		return
+	end
+
+	local function IsAddedMessage(message)
+		return not issecretvalue(message) and message == text
+	end
+
+	local function ReplaceText(message, ...)
+		return shortened, ...
+	end
+
+	frame:TransformMessages(IsAddedMessage, ReplaceText)
+end
+
+-- Clickable URLs
+-- Done in a message filter, which Blizzard skips on its own while the message is secret.
+do
+	local function IsPortOrPath(rest)
+		return rest:find("^:%d+$") or rest:find("^:%d+/") or rest:find("^/")
+	end
+
+	local function IsURL(word)
+		-- X://Y url
+		if word:find("^%a[%w%.+-]+://%S") then
+			return true
+		end
+		-- www.X.Y url
+		if word:find("^www%.[-%w_%%]+%.%S") then
+			return true
+		end
+		-- X@Y.Z email
+		if word:find("^[^@]+@[-%w_%%%.]+%.%a%a+$") then
+			return true
+		end
+		-- IPv4 address, optionally with port and/or path
+		local rest = word:match("^%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?(.*)$")
+		if rest then
+			return rest == "" or IsPortOrPath(rest)
+		end
+		-- X.Y.Z domain with port and/or path
+		rest = word:match("^[-%w_%%%.]*[-%w_%%]%.%a%a+([:/].*)$")
+		if rest then
+			return IsPortOrPath(rest)
+		end
+		return false
+	end
+
+	local function LinkWord(word)
+		-- leave anything with escape sequences alone (links, textures, ...)
+		if word:find("|", 1, true) then
+			return
+		end
+
+		-- punctuation after the url belongs to the sentence
+		local url, trailing = word:match("^(.-)([%.,!%?]*)$")
+		if #url > 4 and IsURL(url) then
+			return urlLinkFormat:format(url, url) .. trailing
+		end
+	end
+
+	local function UrlFilter(chatFrame, event, message, ...)
+		if issecretvalue(message) or type(message) ~= "string" or #message < 5 then
+			return false
+		end
+
+		local linked = message:gsub("%S+", LinkWord)
+		if linked ~= message then
+			return false, linked, ...
+		end
+		return false
+	end
+
+	for _, event in ipairs(urlEvents) do
+		ChatFrameUtil.AddMessageEventFilter(event, UrlFilter)
+	end
+
+	StaticPopupDialogs["NEVMOD_URL_COPY"] = {
 		text = "URL",
-		button2 = CLOSE,
+		button1 = CLOSE,
 		hasEditBox = 1,
-		hasWideEditBox = 1,
-		showAlert = 1,
-		OnShow = function(this)
-			local editBox = _G[this:GetName().."EditBox"]
-			if editBox then
-				editBox:SetText(currentLink)
-				editBox:SetFocus()
-				editBox:HighlightText(0)
-			end
-			local button = _G[this:GetName().."Button2"]
-			if button then
-				button:ClearAllPoints()
-				button:SetWidth(200)
-				button:SetPoint("CENTER", editBox, "CENTER", 0, -30)
-			end
-			local icon = _G[this:GetName().."AlertIcon"]
-			if icon then
-				icon:Hide()
-			end
+		editBoxWidth = 350,
+		OnShow = function(dialog, data)
+			local editBox = dialog:GetEditBox()
+			editBox:SetMaxLetters(0)
+			editBox:SetText(data)
+			editBox:SetFocus()
+			editBox:HighlightText()
 		end,
-		EditBoxOnEscapePressed = function(this) this:GetParent():Hide() end,
+		EditBoxOnEnterPressed = StaticPopup_StandardEditBoxOnEscapePressed,
+		EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
 		timeout = 0,
 		whileDead = 1,
 		hideOnEscape = 1,
 	}
-end
 
--- Sticky
-for k, v in pairs(stickyTypes) do
-	ChatTypeInfo[k].sticky = v and 1 or 0
+	-- "addon" links are dispatched through this event
+	EventRegistry:RegisterCallback("SetItemRef", function(_, link)
+		local url = type(link) == "string" and link:match("^addon:NevMod:url:(.+)$")
+		if url then
+			StaticPopup_Show("NEVMOD_URL_COPY", nil, nil, url)
+		end
+	end, "NevModChat")
 end
 
 -- Buttons
-local FixChatButtons
-do
-	-- Hide the chat shortcut button for emotes/languages/etc
-	ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
-	ChatFrameMenuButton:Hide()
+-- Parenting to a hidden frame keeps them hidden no matter who calls Show on them.
+local hiddenParent = CreateFrame("Frame")
+hiddenParent:Hide()
 
-	-- Hide the quick join toast button
-	if QuickJoinToastButton then
-		QuickJoinToastButton.Show = QuickJoinToastButton.Hide
-		QuickJoinToastButton:Hide()
-	end
-
-	-- Hide the Chat Channel button
-	ChatFrameChannelButton.Show = ChatFrameChannelButton.Hide
-	ChatFrameChannelButton:Hide()
-
-	function FixChatButtons(i)
-		local f = _G[format("ChatFrame%dButtonFrame", i)]
-		 -- Hide the button container
-		f.Show = f.Hide
-		f:Hide()
-		_G[format("ChatFrame%d", i)]:SetClampRectInsets(0,0,0,0) --Allow the chat frame to move to the end of the screen
-	end
-
-	for i = 1, NUM_CHAT_WINDOWS do
-		FixChatButtons(i)
-	end
-
-	if ChatFrame1.UpdateClampOffsets then
-		hooksecurefunc(ChatFrame1, "UpdateClampOffsets", function(frame) frame:SetClampRectInsets(0,0,0,0) end)
-	end
+-- the quick join toast button and the text to speech button live outside of the button frame
+if QuickJoinToastButton then
+	QuickJoinToastButton:SetParent(hiddenParent)
+end
+if TextToSpeechButtonFrame then
+	TextToSpeechButtonFrame:SetParent(hiddenParent)
 end
 
--- Editbox
-local FixEditBox
-do
-	function FixEditBox(i)
-		local eb =  _G[format("%s%d%s", "ChatFrame", i, "EditBox")]
-		local cf = _G[format("%s%d", "ChatFrame", i)]
-		eb:ClearAllPoints()
-		eb:SetPoint("BOTTOMLEFT",  cf, "TOPLEFT",  -5, 0)
-		eb:SetPoint("BOTTOMRIGHT", cf, "TOPRIGHT", 5, 0)
-		eb:SetAltArrowKeyMode(false)
-	end
-
-	for i =1, NUM_CHAT_WINDOWS do
-		FixEditBox(i)
-	end
+local function ResetClampInsets(frame)
+	frame:SetClampRectInsets(0, 0, 0, 0)
 end
 
 -- Scroll
-local FixScroll
-do
-	local function scroll(self, arg1)
-		if arg1 > 0 then
-			if IsShiftKeyDown() then
-				self:ScrollToTop()
-			elseif IsControlKeyDown() then
-				self:PageUp()
-			else
-				for i = 1, scrollLines do
-					self:ScrollUp()
-				end
-			end
-		elseif arg1 < 0 then
-			if IsShiftKeyDown() then
-				self:ScrollToBottom()
-			elseif IsControlKeyDown() then
-				self:PageDown()
-			else
-				for i = 1, scrollLines do
-					self:ScrollDown()
-				end
-			end
+local function OnMouseWheel(frame, delta)
+	if delta > 0 then
+		if IsShiftKeyDown() then
+			frame:ScrollToTop()
+		elseif IsControlKeyDown() then
+			frame:PageUp()
+		else
+			frame:ScrollByAmount(scrollLines)
 		end
-	end
-
-	function FixScroll(i)
-		local cf = _G["ChatFrame"..i]
-		cf:SetScript("OnMouseWheel", scroll)
-		cf:EnableMouseWheel(true)
-	end
-
-	for i = 1, NUM_CHAT_WINDOWS do
-		FixScroll(i)
+	elseif delta < 0 then
+		if IsShiftKeyDown() then
+			frame:ScrollToBottom()
+		elseif IsControlKeyDown() then
+			frame:PageDown()
+		else
+			frame:ScrollByAmount(-scrollLines)
+		end
 	end
 end
 
-for i = 1, NUM_CHAT_WINDOWS do
-	_G["ChatFrame"..i].isNevModAugmented = true
+-- Per chat frame setup
+local augmentedFrames = {}
+
+local function AugmentChatFrame(frame)
+	if augmentedFrames[frame] then
+		return
+	end
+	augmentedFrames[frame] = true
+
+	-- Short channel tags
+	hooksecurefunc(frame, "AddMessage", OnMessageAdded)
+
+	-- Buttons: hide the button frame, this includes the menu and channel buttons on the first frame
+	if frame.buttonFrame then
+		frame.buttonFrame:SetParent(hiddenParent)
+	end
+
+	-- Allow the chat frame to move to the edge of the screen
+	ResetClampInsets(frame)
+	if frame.UpdateClampOffsets then
+		hooksecurefunc(frame, "UpdateClampOffsets", ResetClampInsets)
+	end
+
+	-- Editbox: on top of the chat frame, arrow keys work without holding alt
+	local editBox = frame.editBox
+	if editBox then
+		editBox:ClearAllPoints()
+		editBox:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", -5, 0)
+		editBox:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 5, 0)
+		editBox:SetAltArrowKeyMode(false)
+	end
+
+	-- Scroll
+	frame:EnableMouseWheel(true)
+	frame:SetScript("OnMouseWheel", OnMouseWheel)
 end
 
-hooksecurefunc("FCF_OpenTemporaryWindow", function()
-	for id, frame in pairs(CHAT_FRAMES) do
-		local cf = _G[frame]
-		if not cf.isNevModAugmented then
-			FixChatButtons(id)
-			FixEditBox(id)
-			FixScroll(id)
-			cf.isNevModAugmented = true
+local function AugmentChatFrames()
+	for _, name in pairs(CHAT_FRAMES) do
+		local frame = _G[name]
+		if frame then
+			AugmentChatFrame(frame)
 		end
 	end
-end)
+end
+
+AugmentChatFrames()
+
+-- temporary windows (whisper windows, pet battle log, ..) are created on demand
+hooksecurefunc("FCF_OpenTemporaryWindow", AugmentChatFrames)
