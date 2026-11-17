@@ -18,7 +18,7 @@ hbddebug.lua
 hideorderhallbar.lua
 lgistnodebug.lua
 lootscale.lua
-movementspeed.lua
+#movementspeed.lua
 moveuiwidget.lua
 repairandsell.lua
 smarttracking.lua
