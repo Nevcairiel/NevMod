@@ -3,18 +3,8 @@
 ]]
 
 -- Timestamps
-local timeStampFormat = "%X"
-local timeStampOutput = "|cFFFFFFFF%s|||r %s"
+local chatTimestampFmt = "%H:%M:%S "
 
-local timeStampsEnabled = {
-	true, -- [1]
-	true, -- [2]
-	true, -- [3]
-	true, -- [4]
-	true, -- [5]
-	true, -- [6]
-	true  -- [7]
-}
 
 -- Sticky
 local stickyTypes = {
@@ -117,7 +107,11 @@ do
 				end
 			end
 			-- Time Stamp
-			text = format(timeStampOutput, date(timeStampFormat), text)
+			if chatTimestampFmt then
+				if not text:find("^%d+:%d+:%d+")  then
+					text = BetterDate(chatTimestampFmt, time())..text
+				end
+			end
 		end
 		return orig[frame](frame, text, ...)
 	end
@@ -276,6 +270,3 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
 		end
 	end
 end)
-
--- disable timestamps
-setfenv(ChatFrame_MessageEventHandler, setmetatable({CHAT_TIMESTAMP_FORMAT = false, GetChatTimestampFormat = function() end}, {__index = _G}))

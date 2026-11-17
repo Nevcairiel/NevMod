@@ -1,9 +1,4 @@
 -- automatically enable minimap target tracking when targeting a rare
-local GetNumTrackingTypes = GetNumTrackingTypes or C_Minimap.GetNumTrackingTypes
-local GetTrackingInfo = GetTrackingInfo or C_Minimap.GetTrackingInfo
-local SetTracking = SetTracking or C_Minimap.SetTracking
-
-if not GetNumTrackingTypes then return end
 local Tracking = LibStub("AceAddon-3.0"):GetAddon("NevMod"):NewModule("Tracking", "AceEvent-3.0")
 
 function Tracking:OnEnable()
@@ -11,11 +6,11 @@ function Tracking:OnEnable()
 end
 
 local function ToggleTargetTracking(mode)
-	local count = GetNumTrackingTypes()
+	local count = C_Minimap.GetNumTrackingTypes()
 	for id = 1, count do
-		local name = GetTrackingInfo(id)
-		if name == "Target" then
-			SetTracking(id, mode)
+		local info = C_Minimap.GetTrackingInfo(id)
+		if info.name == "Target" then
+			C_Minimap.SetTracking(id, mode)
 			return
 		end
 	end

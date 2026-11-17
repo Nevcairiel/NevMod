@@ -8,4 +8,6 @@ hooksecurefunc("OrderHall_LoadUI",
 			OrderHallCommandBar:UnregisterAllEvents()
 		end
 	end)
-hooksecurefunc("OrderHall_CheckCommandBar", function() if OrderHallCommandBar then OrderHallCommandBar:Hide() end end)
+if OrderHall_CheckCommandBar then
+	hooksecurefunc("OrderHall_CheckCommandBar", function() if OrderHallCommandBar then OrderHallCommandBar:Hide() end end)
+end
