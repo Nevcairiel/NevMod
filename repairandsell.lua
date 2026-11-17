@@ -1,73 +1,68 @@
--- automatically repair and sell trash when visiting a vendor
+-- automatically repair and sell junk when visiting a vendor
 local RepairAndSell = LibStub("AceAddon-3.0"):GetAddon("NevMod"):NewModule("RepairAndSell", "AceEvent-3.0", "AceConsole-3.0")
 
-local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
-local GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or GetContainerItemLink
-local UseContainerItem = C_Container and C_Container.UseContainerItem or UseContainerItem
-
 function RepairAndSell:OnEnable()
-	self:RegisterEvent("MERCHANT_SHOW", "RepairAndSell")
+	self:RegisterEvent("MERCHANT_SHOW")
 end
 
--- From SmoothDurability
-local function CostString(cost)
-	local gold = abs(cost / 10000)
-	local silver = abs(mod(cost / 100, 100))
-	local copper = abs(mod(cost, 100))
+function RepairAndSell:MERCHANT_SHOW()
+	self:Repair()
+	self:SellJunk()
+end
 
-	if cost > 10000 then
-		return string.format( "|cffffffff%d|r|cffffd700g|r |cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", gold, silver, copper)
-	elseif cost > 100 then
-		return string.format( "|cffffffff%d|r|cffc7c7cfs|r |cffffffff%d|r|cffeda55fc|r", silver, copper)
+function RepairAndSell:Repair()
+	if not CanMerchantRepair() then
+		return
+	end
+
+	local cost, canRepair = GetRepairAllCost()
+	if not canRepair or cost <= 0 then
+		return
+	end
+
+	-- guild funds first, as far as they are available
+	local guildFunds = 0
+	if CanGuildBankRepair() then
+		guildFunds = GetGuildBankMoney()
+		local withdrawLimit = GetGuildBankWithdrawMoney()
+		if withdrawLimit ~= -1 then
+			guildFunds = math.min(guildFunds, withdrawLimit)
+		end
+		guildFunds = math.min(guildFunds, cost)
+	end
+
+	local ownCost = cost - guildFunds
+	local money = GetMoney()
+	if money < ownCost then
+		self:Print(("Autorepair failed, you need %s more."):format(GetMoneyString(ownCost - money)))
+		return
+	end
+
+	if guildFunds > 0 then
+		RepairAllItems(true)
+	end
+	if ownCost > 0 then
+		RepairAllItems()
+	end
+	PlaySound(SOUNDKIT.ITEM_REPAIR)
+
+	if guildFunds <= 0 then
+		self:Print(("Autorepaired for %s."):format(GetMoneyString(cost)))
+	elseif ownCost > 0 then
+		self:Print(("Autorepaired for %s using guild funds (and %s extra)."):format(GetMoneyString(guildFunds), GetMoneyString(ownCost)))
 	else
-		return string.format("|cffffffff%d|r|cffeda55fc|r", copper )
+		self:Print(("Autorepaired for %s using guild funds."):format(GetMoneyString(guildFunds)))
 	end
 end
 
-function RepairAndSell:RepairAndSell()
-	-- Repair Equipment
-	if CanMerchantRepair() then
-		local cost = GetRepairAllCost()
-		local money = GetMoney()
-		if money < cost then
-			self:Print( string.format("Autorepair failed, you need %s more.", CostString( cost - money )) )
-		elseif cost > 0 then
-			local guildRepair = CanGuildBankRepair and CanGuildBankRepair()
-			if guildRepair then
-				local funds = GetGuildBankWithdrawMoney()
-				if funds == -1 then
-					funds = GetGuildBankMoney()
-				else
-					funds = math.min(funds, GetGuildBankMoney())
-				end
-				if funds > 0 then
-					self:Print( string.format("Autorepaired for %s using guild funds %s.", CostString( math.min(cost, funds) ), cost > funds and ("(and %s extra)"):format(CostString( cost - funds )) or ""))
-				else
-					self:Print( string.format("Autorepaired for %s.", CostString( cost )) )
-				end
-			else
-				self:Print( string.format("Autorepaired for %s.", CostString( cost )) )
-			end
-			if guildRepair then
-				RepairAllItems(guildRepair)
-			end
-			RepairAllItems()
-		end
+function RepairAndSell:SellJunk()
+	if not C_MerchantFrame.IsSellAllJunkEnabled() then
+		return
 	end
 
-	-- Sell Junk ( from tekJunkSeller )
-	for bag=0,4 do
-		for slot=0,GetContainerNumSlots(bag) do
-			local link = GetContainerItemLink(bag, slot)
-			if link and select(3, GetItemInfo(link)) == 0 then
-				if ShowMerchantSellCursor then
-					ShowMerchantSellCursor(1)
-				else
-					SetCursor("BUY_CURSOR")
-				end
-				UseContainerItem(bag, slot)
-			end
-		end
+	local numJunk = C_MerchantFrame.GetNumJunkItems()
+	if numJunk > 0 then
+		C_MerchantFrame.SellAllJunkItems()
+		self:Print(("Sold %d junk |4item:items;."):format(numJunk))
 	end
-	ResetCursor()
 end
