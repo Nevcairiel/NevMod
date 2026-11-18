@@ -9,6 +9,8 @@ core.lua
 chat.lua
 chatfilter.lua
 
+tooltip.lua
+
 cameradistance.lua
 easydeleteconfirm.lua
 #equipsetswitcher.lua
